@@ -47,6 +47,10 @@ class NoteViewModel(private val noteDao: NoteDao): ViewModel() {
         }
     }
 
+    fun searchNotes(string: String) : LiveData<List<Note>> {
+        return noteDao.searchDatabase(string).asLiveData()
+    }
+
     fun updateNote(
         id: Int,
         title: String,

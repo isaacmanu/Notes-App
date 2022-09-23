@@ -22,6 +22,9 @@ interface NoteDao {
     @Query("SELECT * from note ORDER BY id ASC")
     fun getAllNotes(): Flow<List<Note>>
 
+    @Query("SELECT * from note where content LIKE :string")
+    fun searchDatabase(string: String): Flow<List<Note>>
+
 
 
 }

@@ -1,11 +1,12 @@
 package com.isaacmanu.notesapp
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.isaacmanu.notesapp.databinding.FragmentNewNoteBinding
 import com.isaacmanu.notesapp.viewmodel.NoteViewModel
@@ -42,9 +43,29 @@ class NewNoteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.topAppBar.inflateMenu(R.menu.top_app_bar_new_note)
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Add menu items here
+
+                menuInflater.inflate(R.menu.top_app_bar_new_note, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Handle the menu selection
+                return when (menuItem.itemId) {
+                    R.id.save_button -> {
+                        saveNote()
+                        true
+                    } else -> false
+                }
+
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
 
+        /*
         binding.topAppBar.setNavigationOnClickListener { view ->
             this.findNavController().navigateUp()
         }
@@ -58,6 +79,8 @@ class NewNoteFragment : Fragment() {
                 } else -> false
             }
         }
+
+         */
 
 
 

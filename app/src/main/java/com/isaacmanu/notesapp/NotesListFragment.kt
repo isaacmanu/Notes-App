@@ -1,12 +1,14 @@
 package com.isaacmanu.notesapp
 
 import android.os.Bundle
+import android.view.*
+import androidx.core.view.MenuHost
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import com.isaacmanu.notesapp.databinding.FragmentNotesListBinding
 import com.isaacmanu.notesapp.viewmodel.NoteViewModel
 import com.isaacmanu.notesapp.viewmodel.NoteViewModelFactory
@@ -45,7 +47,21 @@ class NotesListFragment : Fragment() {
             }
         }
 
-        binding.topAppBar.inflateMenu(R.menu.top_app_bar_note_list)
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Add menu items here
+                menuInflater.inflate(R.menu.top_app_bar_note_list, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Handle the menu selection
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+
 
 
         binding.fab.setOnClickListener {

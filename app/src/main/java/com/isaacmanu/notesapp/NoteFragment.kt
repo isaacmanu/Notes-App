@@ -2,9 +2,11 @@ package com.isaacmanu.notesapp
 
 import android.os.Bundle
 import android.view.*
+import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.isaacmanu.notesapp.databinding.FragmentNoteBinding
@@ -104,8 +106,33 @@ class NoteFragment : Fragment() {
             bind(note)
         }
 
+        val menuHost: MenuHost = requireActivity()
 
-        binding.topAppBar.inflateMenu(R.menu.top_app_bar_note)
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Add menu items here
+                menuInflater.inflate(R.menu.top_app_bar_note, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.save_button -> {
+                        updateNote()
+                        true
+                    }
+                    R.id.delete_button -> {
+                        deleteNote()
+                        true
+                    }
+                    else -> false
+                }
+                // Handle the menu selection
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+
+
+        /*
         binding.topAppBar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
 
 
@@ -113,21 +140,7 @@ class NoteFragment : Fragment() {
             this.findNavController().navigateUp()
         }
 
-
-
-        binding.topAppBar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.save_button -> {
-                    updateNote()
-                    true
-                }
-                R.id.delete_button -> {
-                    deleteNote()
-                    true
-                }
-                else -> false
-            }
-        }
+         */
 
 
 

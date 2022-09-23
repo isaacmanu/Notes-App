@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/noteFragment"
         android:name="com.isaacmanu.notesapp.NoteFragment"
-        android:label="fragment_note"
+        android:label=""
         tools:layout="@layout/fragment_note" >
         <argument
             android:name="item_id"
@@ -20,7 +20,7 @@
     <fragment
         android:id="@+id/notesListFragment"
         android:name="com.isaacmanu.notesapp.NotesListFragment"
-        android:label="fragment_notes_list"
+        android:label="Your Notes"
         tools:layout="@layout/fragment_notes_list" >
         <action
             android:id="@+id/action_notesListFragment_to_noteFragment"
@@ -32,7 +32,7 @@
     <fragment
         android:id="@+id/newNoteFragment"
         android:name="com.isaacmanu.notesapp.NewNoteFragment"
-        android:label="fragment_new_note"
+        android:label="Add Note"
         tools:layout="@layout/fragment_new_note" >
         <action
             android:id="@+id/action_newNoteFragment_to_notesListFragment"
