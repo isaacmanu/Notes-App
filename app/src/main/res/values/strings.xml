@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Notes App</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="save_button">Save button</string>
+    <string name="save_note_button">Save note button</string>
+    <string name="save">Save</string>
+    <string name="delete">delete</string>
+    <string name="search">search</string>
+</resources>
