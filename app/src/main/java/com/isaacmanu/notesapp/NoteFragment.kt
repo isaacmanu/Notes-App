@@ -19,7 +19,11 @@ class NoteFragment : Fragment() {
     private val navigationsArgs: NoteFragmentArgs by navArgs()
     lateinit var note: Note
 
-    //Creates a viewmodel instance using viewmodelfactory
+    /*
+    Creates a viewmodel instance using viewmodelfactory
+    A viewmodel factory is required as we are passing a constructor argument into the viewmodel
+    Namely the NoteDao.
+    */
     private val viewModel: NoteViewModel by activityViewModels {
         NoteViewModelFactory(
             (activity?.application as NoteApplication).database
@@ -27,7 +31,10 @@ class NoteFragment : Fragment() {
         )
     }
 
-    //Binding object for fragment_note layout file
+    /*
+    Binding object for fragment_note layout file
+    This setup is to prevent the binding variable persisting in other fragments
+    */
     private var _binding: FragmentNoteBinding? = null
     private val binding get() = _binding!!
 
@@ -43,6 +50,7 @@ class NoteFragment : Fragment() {
 
 
 
+    //Function to bind the Note data taken from the database to the UI
     private fun bind(note: Note) {
         binding.apply {
             title.setText(note.title)
@@ -50,6 +58,10 @@ class NoteFragment : Fragment() {
         }
     }
 
+    /*
+   Function to determine whether the user has input text to the title
+   or contents EditText's
+   */
     private fun titleOrContentBlank(): Boolean {
         return viewModel.titleOrContentBlank(
             binding.title.text.toString(),
@@ -57,6 +69,7 @@ class NoteFragment : Fragment() {
         )
     }
 
+    //Function to delete the note currently open from the database
     private fun deleteNote() {
         viewModel.deleteNote(note)
         this.findNavController().navigateUp()
@@ -81,6 +94,7 @@ class NoteFragment : Fragment() {
 
     }
 
+    //Updates note entry in database using data input by user
     private fun updateNote() {
 
         if (titleOrContentBlank()) {
@@ -101,16 +115,21 @@ class NoteFragment : Fragment() {
         val id = navigationsArgs.itemId
 
 
+        //Accesses the viewmodel to retrieve the note using the id passed from NotesListFragment
         viewModel.retrieveNote(id).observe(this.viewLifecycleOwner) { newNote ->
             note = newNote
             bind(note)
         }
 
+        /*
+        Setup menu items using MenuHost API
+        This implementation is lifecycle aware so the menu items only persist
+        when the fragment state is RESUMED or higher.
+        */
         val menuHost: MenuHost = requireActivity()
-
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                // Add menu items here
+
                 menuInflater.inflate(R.menu.top_app_bar_note, menu)
             }
 
@@ -126,24 +145,8 @@ class NoteFragment : Fragment() {
                     }
                     else -> false
                 }
-                // Handle the menu selection
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-
-
-
-        /*
-        binding.topAppBar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
-
-
-        binding.topAppBar.setNavigationOnClickListener { view ->
-            this.findNavController().navigateUp()
-        }
-
-         */
-
-
-
 
         binding.fab.setOnClickListener{
             saveNote()

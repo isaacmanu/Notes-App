@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.isaacmanu.notesapp.databinding.NoteListItemBinding
 import com.isaacmanu.notesapp.model.Note
 
+//List adapter with item click listener
 class NoteListAdapter(private val onNoteClicked: (Note) -> Unit): ListAdapter<Note, NoteListAdapter.NoteViewHolder>(DiffCallback) {
 
 

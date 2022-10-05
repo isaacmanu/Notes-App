@@ -15,6 +15,7 @@ import com.isaacmanu.notesapp.viewmodel.NoteViewModelFactory
 
 class NewNoteFragment : Fragment() {
 
+    //Viewmodel instance for the fragment
     private val viewModel: NoteViewModel by activityViewModels {
         NoteViewModelFactory(
             (activity?.application as NoteApplication).database
@@ -22,15 +23,14 @@ class NewNoteFragment : Fragment() {
         )
     }
 
-    //Binding object for fragment_note layout file
+    /*
+    Binding object for fragment_note layout file
+    This setup is to prevent the binding variable persisting in other fragments
+    */
     private var _binding: FragmentNewNoteBinding? = null
     private val binding get() = _binding!!
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
+    
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,17 +43,20 @@ class NewNoteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val menuHost: MenuHost = requireActivity()
 
+        /*
+        Setup menu items using MenuHost API
+        This implementation is lifecycle aware so the menu items only persist
+        when the fragment state is RESUMED or higher.
+        */
+        val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                // Add menu items here
 
                 menuInflater.inflate(R.menu.top_app_bar_new_note, menu)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // Handle the menu selection
                 return when (menuItem.itemId) {
                     R.id.save_button -> {
                         saveNote()
@@ -65,30 +68,15 @@ class NewNoteFragment : Fragment() {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
 
-        /*
-        binding.topAppBar.setNavigationOnClickListener { view ->
-            this.findNavController().navigateUp()
-        }
-
-
-        binding.topAppBar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.save_button -> {
-                    saveNote()
-                    true
-                } else -> false
-            }
-        }
-
-         */
-
-
-
         binding.fab.setOnClickListener{
             saveNote()
         }
     }
 
+    /*
+    Function to determine whether the user has input text to the title
+    or contents EditText's
+    */
     private fun titleOrContentBlank(): Boolean {
         return viewModel.titleOrContentBlank(
             binding.title.text.toString(),
@@ -101,7 +89,6 @@ class NewNoteFragment : Fragment() {
     and content fields to database as long there is a valid entry in either field.
     Also calls getDateTime from viewmodel and saves the response
     */
-    // The fragment needs to get removed from the backstack
     private fun saveNote() {
         if (titleOrContentBlank()) {
             viewModel.addNewNote(
@@ -116,6 +103,7 @@ class NewNoteFragment : Fragment() {
 
     }
 
+    //On Fragment destruction the binding variable is set to null
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

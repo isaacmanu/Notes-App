@@ -15,9 +15,18 @@ import com.isaacmanu.notesapp.viewmodel.NoteViewModelFactory
 
 class NotesListFragment : Fragment() {
 
+    /*
+    Binding object for fragment_note layout file
+    This setup is to prevent the binding variable persisting in other fragments
+    */
     private var _binding: FragmentNotesListBinding? = null
     private val binding get() = _binding!!
 
+    /*
+    Creates a viewmodel instance using viewmodelfactory
+    A viewmodel factory is required as we are passing a constructor argument into the viewmodel
+    Namely the NoteDao.
+    */
     private val viewModel: NoteViewModel by activityViewModels {
         NoteViewModelFactory(
             (activity?.application as NoteApplication).database.noteDao()
@@ -35,28 +44,35 @@ class NotesListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //Setup ListAdapter
         val adapter = NoteListAdapter {
             val action = NotesListFragmentDirections.actionNotesListFragmentToNoteFragment(it.id)
             this.findNavController().navigate(action)
         }
         binding.recyclerView.adapter = adapter
 
+        /*
+        Access viewmodel to retrieve notes from database for ListAdapter
+        Attach observer so any changes are reflected in UI
+        */
         viewModel.allNotes.observe(this.viewLifecycleOwner) { notes ->
             notes.let {
                 adapter.submitList(it)
             }
         }
 
+        /*
+        Setup menu items using MenuHost API
+        This implementation is lifecycle aware so the menu items only persist
+        when the fragment state is RESUMED or higher.
+        */
         val menuHost: MenuHost = requireActivity()
-
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                // Add menu items here
                 menuInflater.inflate(R.menu.top_app_bar_note_list, menu)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // Handle the menu selection
                 return true
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
