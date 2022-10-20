@@ -8,7 +8,6 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
 import com.isaacmanu.notesapp.databinding.FragmentNotesListBinding
 import com.isaacmanu.notesapp.viewmodel.NoteViewModel
 import com.isaacmanu.notesapp.viewmodel.NoteViewModelFactory
