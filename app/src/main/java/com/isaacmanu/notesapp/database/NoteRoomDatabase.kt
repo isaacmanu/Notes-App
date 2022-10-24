@@ -6,6 +6,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.isaacmanu.notesapp.model.Note
 
+//This implementation is adapted from 'Introduction to Room and Flow' codelab hosted on [developer.android.com]
+
 @Database(entities = [Note::class], version = 1, exportSchema = false)
 abstract class NoteRoomDatabase: RoomDatabase() {
 

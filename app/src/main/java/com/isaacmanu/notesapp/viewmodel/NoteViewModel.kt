@@ -8,14 +8,18 @@ import java.text.DateFormat
 
 class NoteViewModel(private val noteDao: NoteDao): ViewModel() {
 
+    // LiveData instance to observe a list of all notes in the database
+    // Uses .asLiveData() as the source is a flow
     val allNotes: LiveData<List<Note>> = noteDao.getAllNotes().asLiveData()
 
+    // Calls insert() function from NoteDao within a coroutine
     private fun insertNote(note: Note) {
         viewModelScope.launch {
             noteDao.insert(note)
         }
     }
 
+    // Creates a Note() object with the passed parameters
     private fun getNewNote(title: String, content: String, date: String): Note {
         return Note(
             title = title,
@@ -24,11 +28,14 @@ class NoteViewModel(private val noteDao: NoteDao): ViewModel() {
         )
     }
 
+    // To be called by the UI when the user wants to save a note
+    // The data entered by the user will be supplied as the parameters
     fun addNewNote(title: String, content: String, date: String) {
         val newNote = getNewNote(title, content, date)
         insertNote(newNote)
     }
 
+    // True if either title or content is a valid string (i.e. not empty or just whitespace)
     fun titleOrContentBlank(title: String, content: String): Boolean {
         if (title.isBlank() && content.isBlank()) {
             return false
@@ -37,10 +44,12 @@ class NoteViewModel(private val noteDao: NoteDao): ViewModel() {
 
     }
 
+    // Calls getNote() from NoteDao
     fun retrieveNote(id: Int): LiveData<Note> {
         return noteDao.getNote(id).asLiveData()
     }
 
+    // Calls delete() from NoteDao
     fun deleteNote(note: Note) {
         viewModelScope.launch {
             noteDao.delete(note)
@@ -51,6 +60,7 @@ class NoteViewModel(private val noteDao: NoteDao): ViewModel() {
         return noteDao.searchDatabase(string).asLiveData()
     }
 
+    // Called by the UI to update a note using data entered by the user
     fun updateNote(
         id: Int,
         title: String,
@@ -62,6 +72,7 @@ class NoteViewModel(private val noteDao: NoteDao): ViewModel() {
 
     }
 
+    // Calls update() from the NoteDao()
     private fun updateNote(note: Note) {
         viewModelScope.launch {
             noteDao.update(note)
@@ -78,6 +89,7 @@ class NoteViewModel(private val noteDao: NoteDao): ViewModel() {
 
 }
 
+// Required as a constructor argument is passed into the viewModel
 class NoteViewModelFactory(private val noteDao: NoteDao): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(NoteViewModel::class.java)) {
